@@ -236,20 +236,20 @@ export function MaskPage() {
           </div>
 
           <div className="window-actions">
-            <div className="window-action-button">
+            {/* <div className="window-action-button">
               <IconButton
                 icon={<DownloadIcon />}
                 bordered
                 onClick={downloadAll}
               />
-            </div>
-            <div className="window-action-button">
+            </div> */}
+            {/* <div className="window-action-button">
               <IconButton
                 icon={<UploadIcon />}
                 bordered
                 onClick={() => showToast(Locale.WIP)}
               />
-            </div>
+            </div> */}
             <div className="window-action-button">
               <IconButton
                 icon={<CloseIcon />}
@@ -368,6 +368,9 @@ export function MaskPage() {
                 text={Locale.Mask.EditModal.Download}
                 key="export"
                 bordered
+                onClick={() =>
+                  downloadAs(JSON.stringify(editingMask), "mask.json")
+                }
               />,
               <IconButton
                 key="copy"
