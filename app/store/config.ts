@@ -17,11 +17,10 @@ export enum Theme {
 }
 
 export const DEFAULT_CONFIG = {
-  sendBotMessages: true as boolean,
   submitKey: SubmitKey.CtrlEnter as SubmitKey,
   avatar: "1f603",
   fontSize: 14,
-  theme: Theme.Light as Theme,
+  theme: Theme.Auto as Theme,
   tightBorder: false,
   sendPreviewBubble: false,
   sidebarWidth: 300,
