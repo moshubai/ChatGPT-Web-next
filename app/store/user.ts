@@ -58,9 +58,10 @@ export const useUserStore = create<UserStore>()(
                 console.log(content);
                 if (content?.code == "200") {
                   resolve(0);
-                  set(() => ({ token: content.data || "" }));
+                  // set(() => ({ token: content.data || "" }));
                 } else {
                   resolve(1);
+                  set(() => ({ token: "" }));
                 }
               } else {
                 set(() => ({}));

@@ -305,7 +305,7 @@ export async function requestGetToken(
   const reqTimeoutId = setTimeout(() => controller.abort(), TIME_OUT_MS);
 
   try {
-    const res = await fetch(baseUrl + "/gpt/login", {
+    const res = await fetch("/gpt/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -380,7 +380,7 @@ export async function requestCheckToken(
   const reqTimeoutId = setTimeout(() => controller.abort(), TIME_OUT_MS);
 
   try {
-    const res = await fetch(baseUrl + "/gpt/check", {
+    const res = await fetch("/gpt/check", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

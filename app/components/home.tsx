@@ -107,10 +107,15 @@ function Screen() {
   const userStore = useUserStore();
 
   const fetchUserInfo = async () => {
-    const resv = await userStore.checkToken();
-    console.log("resv", resv); //log
+    try {
+      const resv = await userStore.checkToken();
+      console.log("resv", resv); //log
 
-    if (resv) {
+      if (resv) {
+        navigate(Path.Login);
+      }
+    } catch (error) {
+      console.log("ccccccc"); //log
       navigate(Path.Login);
     }
   };
@@ -119,6 +124,8 @@ function Screen() {
   useEffect(() => {
     if (userStore.getToken()) {
       fetchUserInfo();
+    } else {
+      navigate(Path.Login);
     }
   }, []);
 

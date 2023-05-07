@@ -4,10 +4,13 @@ const nextConfig = {
   experimental: {
     appDir: true,
   },
+  // env: {
+  //   API_URL: "http://18.223.161.104:8080",
+  // },
   async rewrites() {
     const ret = [];
 
-    const apiUrl = process.env.API_URL;
+    const apiUrl = process.env.API_URL; //"http://18.223.161.104:8080";
     if (apiUrl) {
       console.log("[Next] using api url ", apiUrl);
       ret.push({
