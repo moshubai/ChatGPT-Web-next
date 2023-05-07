@@ -10,7 +10,7 @@ const nextConfig = {
   async rewrites() {
     const ret = [];
 
-    const apiUrl = process.env.API_URL; //"http://18.223.161.104:8080";
+    const apiUrl = process.env.API_URL;
     if (apiUrl) {
       console.log("[Next] using api url ", apiUrl);
       ret.push({
@@ -19,7 +19,9 @@ const nextConfig = {
       });
     }
 
-    return ret;
+    return {
+      beforeFiles: ret,
+    };
   },
   webpack(config) {
     config.module.rules.push({

@@ -124,7 +124,7 @@ function Screen() {
   useEffect(() => {
     if (userStore.getToken()) {
       fetchUserInfo();
-    } else {
+    } else if (!isLogin) {
       navigate(Path.Login);
     }
   }, []);
