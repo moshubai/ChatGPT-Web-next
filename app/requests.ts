@@ -387,6 +387,7 @@ export async function requestCheckToken(
       headers: {
         "Content-Type": "application/json",
         Cookie: params,
+        "gpt-token": params,
       },
       signal: controller.signal,
     });
