@@ -282,3 +282,155 @@ export const ControllerPool = {
     return `${sessionIndex},${messageIndex}`;
   },
 };
+
+// get token
+const baseUrl = "http://18.223.161.104:8080";
+
+export async function requestGetToken(
+  params: { username: string; password: string },
+  options?: {
+    onMessage: (
+      message: {
+        code?: string;
+        data?: string;
+        msg?: string;
+      },
+      done: boolean,
+    ) => void;
+    onError: (error: Error, statusCode?: number) => void;
+    onController?: (controller: AbortController) => void;
+  },
+) {
+  const controller = new AbortController();
+  const reqTimeoutId = setTimeout(() => controller.abort(), TIME_OUT_MS);
+
+  try {
+    const res = await fetch(baseUrl + "/gpt/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(params),
+      signal: controller.signal,
+    });
+
+    clearTimeout(reqTimeoutId);
+
+    let responseText = {};
+
+    const finish = () => {
+      options?.onMessage(responseText, true);
+      controller.abort();
+    };
+
+    if (res.ok) {
+      console.log(res);
+      const reader = res.body?.getReader();
+      const decoder = new TextDecoder();
+
+      while (true) {
+        const content = await reader?.read();
+
+        if (!content || !content.value) {
+          break;
+        }
+
+        const text = decoder.decode(content.value, { stream: true });
+        responseText = JSON.parse(text);
+
+        const done = content.done;
+        options?.onMessage(responseText, false);
+
+        if (done) {
+          break;
+        }
+      }
+
+      finish();
+    } else if (res.status === 401) {
+      console.error("Unauthorized");
+      options?.onError(new Error("Unauthorized"), res.status);
+    } else {
+      console.error("Stream Error", res.body);
+      options?.onError(new Error("Stream Error"), res.status);
+    }
+  } catch (err) {
+    console.error("NetWork Error", err);
+    options?.onError(err as Error);
+  }
+}
+
+// check token
+export async function requestCheckToken(
+  params: string,
+  options?: {
+    onMessage: (
+      message: {
+        code?: string;
+        data?: string;
+        msg?: string;
+      },
+      done: boolean,
+    ) => void;
+    onError: (error: Error, statusCode?: number) => void;
+    onController?: (controller: AbortController) => void;
+  },
+) {
+  const controller = new AbortController();
+  const reqTimeoutId = setTimeout(() => controller.abort(), TIME_OUT_MS);
+
+  try {
+    const res = await fetch(baseUrl + "/gpt/check", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: params,
+      },
+      signal: controller.signal,
+    });
+
+    clearTimeout(reqTimeoutId);
+
+    let responseText = {};
+
+    const finish = () => {
+      options?.onMessage(responseText, true);
+      controller.abort();
+    };
+
+    if (res.ok) {
+      console.log(res);
+      const reader = res.body?.getReader();
+      const decoder = new TextDecoder();
+
+      while (true) {
+        const content = await reader?.read();
+
+        if (!content || !content.value) {
+          break;
+        }
+
+        const text = decoder.decode(content.value, { stream: true });
+        responseText = JSON.parse(text);
+
+        const done = content.done;
+        options?.onMessage(responseText, false);
+
+        if (done) {
+          break;
+        }
+      }
+
+      finish();
+    } else if (res.status === 401) {
+      console.error("Unauthorized");
+      options?.onError(new Error("Unauthorized"), res.status);
+    } else {
+      console.error("Stream Error", res.body);
+      options?.onError(new Error("Stream Error"), res.status);
+    }
+  } catch (err) {
+    console.error("NetWork Error", err);
+    options?.onError(err as Error);
+  }
+}

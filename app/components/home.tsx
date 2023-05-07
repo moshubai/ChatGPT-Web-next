@@ -20,9 +20,11 @@ import {
   Routes,
   Route,
   useLocation,
+  useNavigate,
 } from "react-router-dom";
 import { SideBar } from "./sidebar";
 import { useAppConfig } from "../store/config";
+import { useUserStore } from "../store";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -46,6 +48,10 @@ const NewChat = dynamic(async () => (await import("./new-chat")).NewChat, {
 });
 
 const MaskPage = dynamic(async () => (await import("./mask")).MaskPage, {
+  loading: () => <Loading noLogo />,
+});
+
+const LoginPage = dynamic(async () => (await import("./login")).LoginPage, {
   loading: () => <Loading noLogo />,
 });
 
@@ -94,23 +100,46 @@ function Screen() {
   const config = useAppConfig();
   const location = useLocation();
   const isHome = location.pathname === Path.Home;
+  const isLogin = location.pathname === Path.Login;
   const isMobileScreen = useMobileScreen();
+  const navigate = useNavigate();
+
+  const userStore = useUserStore();
+
+  const fetchUserInfo = async () => {
+    const resv = await userStore.checkToken();
+    console.log("resv", resv); //log
+
+    if (resv) {
+      navigate(Path.Login);
+    }
+  };
+  console.log("isLogin", isLogin); //log
+
+  useEffect(() => {
+    if (userStore.getToken()) {
+      fetchUserInfo();
+    }
+  }, []);
 
   return (
     <div
       className={
-        styles.container +
+        `${isLogin ? "" : styles.container}` +
         ` ${
           config.tightBorder && !isMobileScreen
             ? styles["tight-container"]
+            : isLogin
+            ? ""
             : styles.container
         }`
       }
     >
-      <SideBar className={isHome ? styles["sidebar-show"] : ""} />
+      {!isLogin && <SideBar className={isHome ? styles["sidebar-show"] : ""} />}
 
       <div className={styles["window-content"]} id={SlotID.AppBody}>
         <Routes>
+          <Route path={Path.Login} element={<LoginPage />} />
           <Route path={Path.Home} element={<Chat />} />
           <Route path={Path.NewChat} element={<NewChat />} />
           <Route path={Path.Masks} element={<MaskPage />} />
