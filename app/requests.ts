@@ -307,10 +307,12 @@ export async function requestGetToken(
 
   console.log(process.env);
   try {
-    const res = await fetch("/gpt/login", {
+    const openaiUrl = useAccessStore.getState().openaiUrl;
+    const res = await fetch(openaiUrl + "gpt/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+    ...getHeaders(),
       },
       body: JSON.stringify(params),
       signal: controller.signal,
@@ -382,12 +384,14 @@ export async function requestCheckToken(
   const reqTimeoutId = setTimeout(() => controller.abort(), TIME_OUT_MS);
 
   try {
-    const res = await fetch("/gpt/check", {
+     const openaiUrl = useAccessStore.getState().openaiUrl;
+    const res = await fetch(openaiUrl + "gpt/check", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
         Cookie: params,
         "gpt-token": params,
+    ...getHeaders(),
       },
       signal: controller.signal,
     });
