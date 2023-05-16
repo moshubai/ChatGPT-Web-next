@@ -33,6 +33,7 @@ import {
   useAppConfig,
   ModelConfig,
   DEFAULT_TOPIC,
+  useUserStore,
 } from "../store";
 
 import {
@@ -416,6 +417,7 @@ export function Chat() {
   const [hitBottom, setHitBottom] = useState(true);
   const isMobileScreen = useMobileScreen();
   const navigate = useNavigate();
+  const userStore = useUserStore();
 
   const onChatBodyScroll = (e: HTMLElement) => {
     const isTouchBottom = e.scrollTop + e.clientHeight >= e.scrollHeight - 100;
@@ -480,6 +482,10 @@ export function Chat() {
 
   // submit user input
   const onUserSubmit = () => {
+    if (userStore.getToken().trim() === "") {
+      navigate(Path.Login);
+      return;
+    }
     if (userInput.trim() === "") return;
     setIsLoading(true);
     chatStore.onUserInput(userInput).then(() => setIsLoading(false));

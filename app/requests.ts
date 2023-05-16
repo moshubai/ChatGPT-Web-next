@@ -312,7 +312,7 @@ export async function requestGetToken(
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-    ...getHeaders(),
+        ...getHeaders(),
       },
       body: JSON.stringify(params),
       signal: controller.signal,
@@ -384,14 +384,14 @@ export async function requestCheckToken(
   const reqTimeoutId = setTimeout(() => controller.abort(), TIME_OUT_MS);
 
   try {
-     const openaiUrl = useAccessStore.getState().openaiUrl;
+    const openaiUrl = useAccessStore.getState().openaiUrl;
     const res = await fetch(openaiUrl + "gpt/check", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
         Cookie: params,
-        "gpt-token": params,
-    ...getHeaders(),
+        "Gpt-Token": params,
+        ...getHeaders(),
       },
       signal: controller.signal,
     });
