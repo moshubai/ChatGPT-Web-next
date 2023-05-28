@@ -16,6 +16,7 @@ export function LoginPage() {
   const navigate = useNavigate();
   const [username, setUserName] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [passwordShow, setPasswordShow] = useState<boolean>(true);
 
   const onUser = (text: string) => {
     setUserName(text);
@@ -36,11 +37,23 @@ export function LoginPage() {
     const res = await userStore.goLogin(username, password);
     if (res === 0) {
       console.log("resres", res); //log
+      userStore.setLoginInfo({
+        username,
+        password,
+      });
       navigate(Path.Chat);
     } else {
       showToast("登录失败");
     }
   };
+
+  useEffect(() => {
+    if (userStore.getIsRember()) {
+      const { username, password } = userStore.getLoginInfo();
+      setUserName(username);
+      setPassword(password);
+    }
+  }, []);
 
   return (
     <ErrorBoundary>
@@ -56,6 +69,7 @@ export function LoginPage() {
             </span>
             <input
               type="text"
+              value={username}
               className={styles["text-bar"]}
               placeholder={"请输入用户名"}
               onInput={(e) => onUser(e.currentTarget.value)}
@@ -69,11 +83,33 @@ export function LoginPage() {
               />
             </span>
             <input
-              type="password"
+              value={password}
+              type={passwordShow ? "password" : "text"}
               className={styles["password-bar"]}
               placeholder={"请输入密码"}
               onInput={(e) => onPassword(e.currentTarget.value)}
             />
+          </p>
+          <p className={styles["pass_sty"]}>
+            <span
+              onClick={() => {
+                userStore.setIsRember();
+              }}
+            >
+              <input
+                type="checkbox"
+                style={{ marginRight: 5 }}
+                checked={userStore.getIsRember()}
+              ></input>
+              记住密码
+            </span>
+            <span
+              onClick={() => {
+                setPasswordShow(!passwordShow);
+              }}
+            >
+              显示密码
+            </span>
           </p>
           <p style={{ marginTop: 20 }}>
             <IconButton
