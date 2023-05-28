@@ -13,7 +13,6 @@ export enum Path {
   Settings = "/settings",
   NewChat = "/new-chat",
   Masks = "/masks",
-  Login = "/login",
 }
 
 export enum SlotID {
@@ -32,7 +31,6 @@ export enum StoreKey {
   Mask = "mask-store",
   Prompt = "prompt-store",
   Update = "chat-update",
-  User = "user-store",
 }
 
 export const MAX_SIDEBAR_WIDTH = 500;
@@ -40,3 +38,9 @@ export const MIN_SIDEBAR_WIDTH = 230;
 export const NARROW_SIDEBAR_WIDTH = 100;
 
 export const ACCESS_CODE_PREFIX = "ak-";
+
+export const LAST_INPUT_KEY = "last-input";
+
+export const REQUEST_TIMEOUT_MS = 60000;
+
+export const EXPORT_MESSAGE_CLASS_NAME = "export-markdown";

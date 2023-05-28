@@ -20,11 +20,9 @@ import {
   Routes,
   Route,
   useLocation,
-  useNavigate,
 } from "react-router-dom";
 import { SideBar } from "./sidebar";
 import { useAppConfig } from "../store/config";
-import { useUserStore } from "../store";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -51,10 +49,6 @@ const MaskPage = dynamic(async () => (await import("./mask")).MaskPage, {
   loading: () => <Loading noLogo />,
 });
 
-const LoginPage = dynamic(async () => (await import("./login")).LoginPage, {
-  loading: () => <Loading noLogo />,
-});
-
 export function useSwitchTheme() {
   const config = useAppConfig();
 
@@ -69,17 +63,17 @@ export function useSwitchTheme() {
     }
 
     const metaDescriptionDark = document.querySelector(
-      'meta[name="theme-color"][media]',
+      'meta[name="theme-color"][media*="dark"]',
     );
     const metaDescriptionLight = document.querySelector(
-      'meta[name="theme-color"]:not([media])',
+      'meta[name="theme-color"][media*="light"]',
     );
 
     if (config.theme === "auto") {
       metaDescriptionDark?.setAttribute("content", "#151515");
       metaDescriptionLight?.setAttribute("content", "#fafafa");
     } else {
-      const themeColor = getCSSVar("--themeColor");
+      const themeColor = getCSSVar("--theme-color");
       metaDescriptionDark?.setAttribute("content", themeColor);
       metaDescriptionLight?.setAttribute("content", themeColor);
     }
@@ -96,57 +90,39 @@ const useHasHydrated = () => {
   return hasHydrated;
 };
 
+const loadAsyncGoogleFont = () => {
+  const linkEl = document.createElement("link");
+  linkEl.rel = "stylesheet";
+  linkEl.href =
+    "/google-fonts/css2?family=Noto+Sans+SC:wght@300;400;700;900&display=swap";
+  document.head.appendChild(linkEl);
+};
+
 function Screen() {
   const config = useAppConfig();
   const location = useLocation();
   const isHome = location.pathname === Path.Home;
-  const isLogin = location.pathname === Path.Login;
   const isMobileScreen = useMobileScreen();
-  const navigate = useNavigate();
-
-  const userStore = useUserStore();
-
-  const fetchUserInfo = async () => {
-    try {
-      const resv = await userStore.checkToken();
-      console.log("resv", resv); //log
-
-      if (resv) {
-        navigate(Path.Login);
-      }
-    } catch (error) {
-      console.log("ccccccc"); //log
-      navigate(Path.Login);
-    }
-  };
-  console.log("isLogin", isLogin); //log
 
   useEffect(() => {
-    if (userStore.getToken()) {
-      fetchUserInfo();
-    } else if (!isLogin) {
-      navigate(Path.Login);
-    }
+    loadAsyncGoogleFont();
   }, []);
 
   return (
     <div
       className={
-        `${isLogin ? "" : styles.container}` +
+        styles.container +
         ` ${
           config.tightBorder && !isMobileScreen
             ? styles["tight-container"]
-            : isLogin
-            ? ""
             : styles.container
         }`
       }
     >
-      {!isLogin && <SideBar className={isHome ? styles["sidebar-show"] : ""} />}
+      <SideBar className={isHome ? styles["sidebar-show"] : ""} />
 
       <div className={styles["window-content"]} id={SlotID.AppBody}>
         <Routes>
-          <Route path={Path.Login} element={<LoginPage />} />
           <Route path={Path.Home} element={<Chat />} />
           <Route path={Path.NewChat} element={<NewChat />} />
           <Route path={Path.Masks} element={<MaskPage />} />
