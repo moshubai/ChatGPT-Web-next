@@ -1,14 +1,19 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { BUILTIN_MASKS } from "../masks";
-import { getLang, Lang } from "../locales";
-import { DEFAULT_TOPIC, Message } from "./chat";
-import { ModelConfig, ModelType, useAppConfig } from "./config";
+// import { BUILTIN_MASKS } from "../masks";
+// import { getLang, Lang } from "../locales";
+// import { DEFAULT_TOPIC, Message } from "./chat";
+// import { ModelConfig, ModelType, useAppConfig } from "./config";
 import { StoreKey } from "../constant";
 import { requestGetToken, requestCheckToken } from "../requests";
 
 export const USER_INFO_TOKEN = {
   token: "" as string,
+  loginInfo: {
+    username: "",
+    password: "",
+  } as object,
+  isRemberInfo: false as boolean,
 };
 
 export type MaskState = typeof USER_INFO_TOKEN;
@@ -16,6 +21,10 @@ type UserStore = MaskState & {
   goLogin: (username: string, password: string) => Promise<number>;
   checkToken: () => Promise<number>;
   getToken: () => string;
+  getLoginInfo: () => { username: string; password: string };
+  getIsRember: () => boolean;
+  setLoginInfo: (info: object) => void;
+  setIsRember: () => void;
 };
 
 export const useUserStore = create<UserStore>()(
@@ -79,6 +88,24 @@ export const useUserStore = create<UserStore>()(
       },
       getToken() {
         return get().token;
+      },
+      getLoginInfo() {
+        // return get().loginInfo;
+        const { username = "", password = "" } = get().loginInfo as {
+          username: string;
+          password: string;
+        };
+        return { username, password };
+      },
+      setLoginInfo(info) {
+        set(() => ({ loginInfo: info || {} }));
+      },
+      getIsRember() {
+        return get().isRemberInfo;
+      },
+      setIsRember() {
+        let params = !get().isRemberInfo;
+        set(() => ({ isRemberInfo: params || false }));
       },
     }),
     {
