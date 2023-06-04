@@ -21,6 +21,7 @@ import {
   useUpdateStore,
   useAccessStore,
   useAppConfig,
+  useUserStore,
 } from "../store";
 
 import Locale, { AllLangs, changeLang, getLang } from "../locales";
@@ -204,6 +205,8 @@ export function Settings() {
   const updateConfig = config.update;
   const resetConfig = config.reset;
   const chatStore = useChatStore();
+  const userStore = useUserStore();
+  const { username } = userStore.getLoginInfo();
 
   const updateStore = useUpdateStore();
   const [checkingUpdate, setCheckingUpdate] = useState(false);
@@ -489,7 +492,7 @@ export function Settings() {
             <></>
           )}
 
-          {!accessStore.hideUserApiKey ? (
+          {!accessStore.hideUserApiKey && username === "admin" ? (
             <ListItem
               title={Locale.Settings.Token.Title}
               subTitle={Locale.Settings.Token.SubTitle}
@@ -504,30 +507,31 @@ export function Settings() {
               />
             </ListItem>
           ) : null}
-
-          <ListItem
-            title={Locale.Settings.Usage.Title}
-            subTitle={
-              showUsage
-                ? loadingUsage
-                  ? Locale.Settings.Usage.IsChecking
-                  : Locale.Settings.Usage.SubTitle(
-                      usage?.used ?? "[?]",
-                      usage?.subscription ?? "[?]",
-                    )
-                : Locale.Settings.Usage.NoAccess
-            }
-          >
-            {!showUsage || loadingUsage ? (
-              <div />
-            ) : (
-              <IconButton
-                icon={<ResetIcon></ResetIcon>}
-                text={Locale.Settings.Usage.Check}
-                onClick={() => checkUsage(true)}
-              />
-            )}
-          </ListItem>
+          {username === "admin" ? (
+            <ListItem
+              title={Locale.Settings.Usage.Title}
+              subTitle={
+                showUsage
+                  ? loadingUsage
+                    ? Locale.Settings.Usage.IsChecking
+                    : Locale.Settings.Usage.SubTitle(
+                        usage?.used ?? "[?]",
+                        usage?.subscription ?? "[?]",
+                      )
+                  : Locale.Settings.Usage.NoAccess
+              }
+            >
+              {!showUsage || loadingUsage ? (
+                <div />
+              ) : (
+                <IconButton
+                  icon={<ResetIcon></ResetIcon>}
+                  text={Locale.Settings.Usage.Check}
+                  onClick={() => checkUsage(true)}
+                />
+              )}
+            </ListItem>
+          ) : null}
         </List>
 
         <List>
