@@ -482,10 +482,10 @@ export function Chat() {
 
   // submit user input
   const onUserSubmit = () => {
-    if (userStore.getToken().trim() === "") {
-      navigate(Path.Login);
-      return;
-    }
+    // if (userStore.getToken().trim() === "") {
+    //   navigate(Path.Login);
+    //   return;
+    // }
     if (userInput.trim() === "") return;
     setIsLoading(true);
     chatStore.onUserInput(userInput).then(() => setIsLoading(false));
