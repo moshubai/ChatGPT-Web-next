@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 
 // 登录反代理
-const BASE_SERVE_URL = "http://18.223.161.104:8090";
+const BASE_SERVE_URL = "http://47.117.169.215:8090";
 
 const OPENAI_URL = "api.openai.com";
 const DEFAULT_PROTOCOL = "https";
