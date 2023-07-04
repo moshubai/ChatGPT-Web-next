@@ -73,6 +73,7 @@ async function handle(
     // try to parse error msg
     try {
       const mayBeErrorBody = await api.json();
+      console.error("[OpenAI await api.json()] ", mayBeErrorBody);
       if (mayBeErrorBody.error) {
         console.error("[OpenAI Response] ", mayBeErrorBody);
         return formatResponse(mayBeErrorBody);
