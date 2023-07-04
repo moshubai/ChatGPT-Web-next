@@ -121,13 +121,13 @@ function Screen() {
   };
   console.log("isLogin", isLogin); //log
 
-  useEffect(() => {
-    if (userStore.getToken()) {
-      fetchUserInfo();
-    } else if (!isLogin) {
-      navigate(Path.Login);
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (userStore.getToken()) {
+  //     fetchUserInfo();
+  //   } else if (!isLogin) {
+  //     navigate(Path.Login);
+  //   }
+  // }, []);
 
   return (
     <div

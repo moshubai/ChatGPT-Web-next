@@ -304,24 +304,6 @@ export async function requestGetToken(
 ) {
   const controller = new AbortController();
   const reqTimeoutId = setTimeout(() => controller.abort(), TIME_OUT_MS);
-
-  console.log(process.env);
-  try {
-    fetch('http://47.117.169.215:8090/gpt/login', {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      cache: "no-store",
-      method: 'POST',
-      body: JSON.stringify(params),
-    }).then(res => res.json()).then(json => {
-      console.log(json)
-    }).catch(function (ex) {
-      console.log('parsing failed', ex)
-    })
-  } catch (error) {
-
-  }
   try {
     const openaiUrl = useAccessStore.getState().openaiUrl;
     const res = await fetch(openaiUrl + "gpt/login", {
